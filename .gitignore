@@ -109,3 +109,6 @@ conda-meta/
 
 # Cookiecutter template specific
 cookiecutter-data-science/
+
+# Notebooks
+notebooks/
