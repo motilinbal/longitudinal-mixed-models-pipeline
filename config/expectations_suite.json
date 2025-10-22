@@ -1,0 +1,288 @@
+{
+  "data_asset_type": "Dataset",
+  "expectation_suite_name": "longitudinal_data_validation",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_ordered_list",
+      "kwargs": {
+        "column_list": [
+          "Replicate_ID",
+          "Participant_ID",
+          "Treatment",
+          "Time",
+          "Blood_Pressure_Systolic",
+          "Heart_Rate",
+          "Cholesterol_LDL",
+          "Glucose_Fasting",
+          "BMI",
+          "Inflammation_Marker",
+          "Notes"
+        ]
+      },
+      "meta": {
+        "description": "Validate that all required columns are present in correct order"
+      }
+    },
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 200,
+        "max_value": 400
+      },
+      "meta": {
+        "description": "Validate reasonable number of observations (32 participants × 9 time points = 288 expected)"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "Replicate_ID",
+        "value_set": ["Rep1", "Rep2", "Rep3", "Rep4"]
+      },
+      "meta": {
+        "description": "Validate replicate IDs are from expected set"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "Participant_ID",
+        "regex": "^P\\d{3}$"
+      },
+      "meta": {
+        "description": "Validate participant ID format (P001-P032)"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "Treatment",
+        "value_set": ["A", "B"]
+      },
+      "meta": {
+        "description": "Validate treatment assignments are only A or B"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Time",
+        "min_value": 0,
+        "max_value": 8
+      },
+      "meta": {
+        "description": "Validate time points are within expected range (0-8)"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "Time",
+        "type_": "int64"
+      },
+      "meta": {
+        "description": "Validate time column is integer type"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Blood_Pressure_Systolic",
+        "min_value": 80,
+        "max_value": 220
+      },
+      "meta": {
+        "description": "Validate systolic blood pressure is within physiologically plausible range"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Heart_Rate",
+        "min_value": 40,
+        "max_value": 120
+      },
+      "meta": {
+        "description": "Validate heart rate is within physiologically plausible range"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Cholesterol_LDL",
+        "min_value": 50,
+        "max_value": 250
+      },
+      "meta": {
+        "description": "Validate LDL cholesterol is within plausible range"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Glucose_Fasting",
+        "min_value": 60,
+        "max_value": 200
+      },
+      "meta": {
+        "description": "Validate fasting glucose is within plausible range"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "BMI",
+        "min_value": 15,
+        "max_value": 50
+      },
+      "meta": {
+        "description": "Validate BMI is within plausible range"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "Inflammation_Marker",
+        "min_value": 0,
+        "max_value": 20
+      },
+      "meta": {
+        "description": "Validate inflammation marker (CRP) is within plausible range"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Replicate_ID"
+      },
+      "meta": {
+        "description": "Validate replicate ID has no null values"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Participant_ID"
+      },
+      "meta": {
+        "description": "Validate participant ID has no null values"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Treatment"
+      },
+      "meta": {
+        "description": "Validate treatment has no null values"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "Time"
+      },
+      "meta": {
+        "description": "Validate time has no null values"
+      }
+    },
+    {
+      "expectation_type": "expect_column_unique_value_count_to_be_between",
+      "kwargs": {
+        "column": "Participant_ID",
+        "min_value": 30,
+        "max_value": 35
+      },
+      "meta": {
+        "description": "Validate expected number of unique participants (32 expected)"
+      }
+    },
+    {
+      "expectation_type": "expect_column_proportion_of_unique_values_to_be_between",
+      "kwargs": {
+        "column": "Replicate_ID",
+        "min_value": 0.01,
+        "max_value": 0.05
+      },
+      "meta": {
+        "description": "Validate proportion of unique replicate IDs (should be low since repeated)"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "Notes"
+      },
+      "meta": {
+        "description": "Validate notes column exists for documenting data issues"
+      }
+    },
+    {
+      "expectation_type": "expect_compound_columns_to_be_unique",
+      "kwargs": {
+        "column_list": ["Participant_ID", "Time"]
+      },
+      "meta": {
+        "description": "Validate no duplicate participant-time combinations"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_increasing",
+      "kwargs": {
+        "column": "Time",
+        "strictly": false,
+        "row_condition": "Participant_ID == Participant_ID"
+      },
+      "meta": {
+        "description": "Validate time is non-decreasing within each participant"
+      }
+    },
+    {
+      "expectation_type": "expect_column_mean_to_be_between",
+      "kwargs": {
+        "column": "Blood_Pressure_Systolic",
+        "min_value": 100,
+        "max_value": 160
+      },
+      "meta": {
+        "description": "Validate reasonable average blood pressure"
+      }
+    },
+    {
+      "expectation_type": "expect_column_mean_to_be_between",
+      "kwargs": {
+        "column": "Heart_Rate",
+        "min_value": 60,
+        "max_value": 90
+      },
+      "meta": {
+        "description": "Validate reasonable average heart rate"
+      }
+    },
+    {
+      "expectation_type": "expect_column_distinct_values_to_be_in_set",
+      "kwargs": {
+        "column": "Time",
+        "value_set": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+      },
+      "meta": {
+        "description": "Validate time points match expected schedule"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_match_regex_list",
+      "kwargs": {
+        "column": "Blood_Pressure_Systolic",
+        "regex_list": ["^\\s*$", "NA", "N/A", "null", "NULL"]
+      },
+      "meta": {
+        "description": "Validate blood pressure doesn't contain common null indicators"
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.0",
+    "notes": "Validation suite for longitudinal medical experiment data",
+    "data_context": "Longitudinal treatment study with 4 replicates, 32 participants, 9 time points"
+  }
+}

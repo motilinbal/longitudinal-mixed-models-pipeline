@@ -112,3 +112,6 @@ cookiecutter-data-science/
 
 # Notebooks
 notebooks/
+
+# tests
+tests/

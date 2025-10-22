@@ -1,0 +1,339 @@
+# =============================================================================
+# Longitudinal Statistical Analysis Pipeline Configuration
+# =============================================================================
+# This file centralizes all configurable parameters for the analysis pipeline
+# to enhance reproducibility and ease of modification without code changes.
+
+# -----------------------------------------------------------------------------
+# DATA CONFIGURATION
+# -----------------------------------------------------------------------------
+data:
+  # Input data paths
+  raw_data_dir: "data/raw"
+  raw_file_pattern: "replicate_*.csv"
+  processed_data_dir: "data/processed"
+
+  # Output file naming conventions
+  validated_data_file: "01_validated_data.parquet"
+  outliers_flagged_file: "02_outliers_flagged.parquet"
+  imputed_data_file: "03_imputed_data.parquet"
+  mice_imputations_dir: "mice_imputations"
+  normality_assessment_file: "04_normality_assessment.csv"
+
+  # Data structure
+  id_columns:
+    replicate_id: "Replicate_ID"
+    participant_id: "Participant_ID"
+  treatment_column: "Treatment"
+  time_column: "Time"
+  baseline_time: 0
+
+  # Outcome variables to analyze (from the sham dataset)
+  outcome_variables:
+    - "Blood_Pressure_Systolic"
+    - "Heart_Rate"
+    - "Cholesterol_LDL"
+    - "Glucose_Fasting"
+    - "BMI"
+    - "Inflammation_Marker"
+
+# -----------------------------------------------------------------------------
+# DATA VALIDATION CONFIGURATION
+# -----------------------------------------------------------------------------
+validation:
+  # Great Expectations configuration
+  expectations_suite_file: "config/expectations_suite.json"
+  validation_report_file: "data_validation_report.html"
+
+  # Data quality thresholds
+  min_participants_per_replicate: 6
+  max_missing_rate_per_column: 0.15
+  expected_treatment_balance_threshold: 0.3  # Max imbalance allowed
+
+# -----------------------------------------------------------------------------
+# OUTLIER DETECTION CONFIGURATION
+# -----------------------------------------------------------------------------
+outliers:
+  # Isolation Forest parameters
+  contamination: 0.05  # Expected proportion of outliers (5%)
+  random_state: 42
+  n_estimators: 100
+
+  # Output columns naming pattern
+  outlier_flag_suffix: "_is_outlier"
+
+  # Columns to exclude from outlier detection (IDs, factors)
+  exclude_columns:
+    - "Replicate_ID"
+    - "Participant_ID"
+    - "Treatment"
+    - "Time"
+    - "Notes"
+
+# -----------------------------------------------------------------------------
+# MISSING DATA IMPPUTATION CONFIGURATION
+# -----------------------------------------------------------------------------
+imputation:
+  # MICE (Multiple Imputation by Chained Equations) parameters
+  n_imputations: 5  # Number of imputed datasets to generate
+  max_iter: 10      # Maximum iterations per imputation
+  random_state: 42
+
+  # Imputation method by variable type
+  default_method: "pmm"  # Predictive Mean Matching
+  methods:
+    continuous: "pmm"
+    binary: "logreg"
+    count: "poisson"
+
+  # Columns to exclude from imputation
+  exclude_columns:
+    - "Replicate_ID"
+    - "Participant_ID"
+    - "Treatment"
+    - "Time"
+    - "Notes"
+
+# -----------------------------------------------------------------------------
+# EXPLORATORY DATA ANALYSIS CONFIGURATION
+# -----------------------------------------------------------------------------
+eda:
+  # Report output
+  report_file: "eda_report.html"
+
+  # Visualization parameters
+  figure_size: [10, 6]
+  dpi: 300
+
+  # Normality assessment
+  normality_test: "shapiro"  # Shapiro-Wilk test
+  normality_alpha: 0.05      # Significance threshold for normality
+
+  # Plot types to generate
+  generate_plots:
+    spaghetti: true
+    mean_trends: true
+    distributions: true
+    correlation_matrix: true
+
+# -----------------------------------------------------------------------------
+# POWER ANALYSIS CONFIGURATION
+# -----------------------------------------------------------------------------
+power_analysis:
+  # Simulation parameters
+  n_simulations: 1000
+  effect_size_range:
+    min: 0.1
+    max: 0.8
+    step: 0.1
+
+  # Output
+  power_curve_file: "power_analysis.png"
+  power_summary_file: "power_analysis_summary.csv"
+
+  # Model parameters for simulation
+  random_state: 42
+  alpha: 0.05
+
+# -----------------------------------------------------------------------------
+# MODELING CONFIGURATION
+# -----------------------------------------------------------------------------
+modeling:
+  # Linear Mixed-Effects Model (LMM) parameters
+  lmm:
+    # Formula: outcome ~ treatment * time_point + (1 + time_point | participant_id)
+    base_formula: "treatment * time_point + (1 + time_point | participant_id)"
+    fallback_formula: "treatment * time_point + (1 | participant_id)"  # If convergence fails
+
+    # Optimization parameters
+    optimizer: "bobyqa"
+    max_iterations: 1000
+    convergence_tolerance: 1e-6
+
+    # Robust standard errors (if heteroscedasticity detected)
+    use_robust_se: false
+    robust_method: "HC3"
+
+  # Generalized Linear Mixed-Effects Model (GLMM) parameters
+  glmm:
+    # Supported families
+    supported_families:
+      - "binomial"
+      - "poisson"
+      - "negative.binomial"
+
+    # Default family for non-normal outcomes
+    default_family: "gaussian"
+
+    # Optimization parameters
+    optimizer: "bobyqa"
+    max_iterations: 1000
+    convergence_tolerance: 1e-6
+
+  # Model output
+  models_dir: "models"
+  model_file_suffix: "_lmm.pkl"
+  glmm_file_suffix: "_glmm.pkl"
+
+# -----------------------------------------------------------------------------
+# MODEL DIAGNOSTICS CONFIGURATION
+# -----------------------------------------------------------------------------
+diagnostics:
+  # Diagnostic plots to generate
+  plot_types:
+    - "residuals_vs_fitted"
+    - "qq_plot"
+    - "scale_location"
+    - "cook_distance"
+    - "random_effects"
+
+  # Output directory
+  diagnostics_dir: "models/diagnostics"
+
+  # Parallel processing
+  n_workers: 4  # Number of parallel workers for diagnostic plot generation
+
+  # Thresholds for diagnostic warnings
+  residual_normality_alpha: 0.05
+  cook_distance_threshold: 4.0  # 4/n observation rule
+  leverage_threshold: 2.0        # 2*p/n rule
+
+# -----------------------------------------------------------------------------
+# STATISTICAL INFERENCE CONFIGURATION
+# -----------------------------------------------------------------------------
+inference:
+  # Multiple comparison correction
+  fdr_method: "benjamini-hochberg"  # BH procedure
+  fdr_alpha: 0.05                   # FDR control level
+
+  # Post-hoc analysis
+  posthoc_method: "emmeans"  # Estimated marginal means
+  confidence_level: 0.95
+
+  # Effect size calculations
+  effect_sizes:
+    cohens_d: true
+    partial_eta_squared: true
+
+  # Output files
+  results_file: "final_corrected_results.csv"
+  posthoc_file: "posthoc_corrected_results.csv"
+
+# -----------------------------------------------------------------------------
+# SENSITIVITY ANALYSIS CONFIGURATION
+# -----------------------------------------------------------------------------
+sensitivity:
+  # Sensitivity analyses to run
+  analyses:
+    - "outlier_exclusion"  # Re-run without outliers
+    - "multiple_imputation"  # Use all MICE datasets
+
+  # Multiple imputation pooling (Rubin's Rules)
+  rubin_rules:
+    pool_intercepts: true
+    pool_slopes: true
+    pool_variances: true
+
+  # Output
+  sensitivity_dir: "reports/sensitivity"
+  comparison_file: "sensitivity_comparison.csv"
+
+# -----------------------------------------------------------------------------
+# REPORT GENERATION CONFIGURATION
+# -----------------------------------------------------------------------------
+reporting:
+  # Quarto template
+  template_file: "src/visualization/13_create_parameterized_report.qmd"
+
+  # Output
+  reports_dir: "reports"
+  report_subdir: "outcome_reports"
+
+  # Parallel processing
+  n_workers: 4  # Number of parallel report generations
+
+  # Report content
+  include_sections:
+    - "executive_summary"
+    - "eda"
+    - "model_results"
+    - "diagnostics"
+    - "clinical_interpretation"
+
+  # Accessibility options
+  accessibility:
+    enabled: true
+    axe_checks: true
+
+  # Clinical relevance thresholds
+  clinical_significance:
+    blood_pressure_change: 5.0    # mmHg
+    heart_rate_change: 5.0        # bpm
+    cholesterol_change: 10.0      # mg/dL
+    glucose_change: 10.0          # mg/dL
+    bmi_change: 0.5               # BMI units
+    crp_change: 1.0               # mg/L
+
+# -----------------------------------------------------------------------------
+# LOGGING CONFIGURATION
+# -----------------------------------------------------------------------------
+logging:
+  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  level: "INFO"
+
+  # Log file
+  log_file: "logs/pipeline.log"
+  max_file_size: "10MB"
+  backup_count: 5
+
+  # Console output
+  console_output: true
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# -----------------------------------------------------------------------------
+# PERFORMANCE CONFIGURATION
+# -----------------------------------------------------------------------------
+performance:
+  # Random seeds for reproducibility
+  random_state: 42
+  numpy_seed: 42
+  python_seed: 42
+
+  # Parallel processing
+  max_workers: 4  # Maximum number of parallel workers
+  chunk_size: 1000  # For processing large datasets
+
+  # Memory management
+  memory_limit: "4GB"
+  use_memory_mapping: true
+
+# -----------------------------------------------------------------------------
+# VERSION CONTROL CONFIGURATION
+# -----------------------------------------------------------------------------
+version:
+  # Pipeline version
+  pipeline_version: "1.0.0"
+
+  # Data source tracking
+  data_version: "v1.0"
+  source_date: "2025-06-17"
+
+  # Configuration tracking
+  config_hash: null  # Will be auto-generated
+
+# -----------------------------------------------------------------------------
+# DEVELOPMENT/DEBUGGING CONFIGURATION
+# -----------------------------------------------------------------------------
+development:
+  # Development mode
+  debug_mode: false
+
+  # Test data
+  use_sample_data: false
+  sample_size: 100  # For quick testing
+
+  # Verbose output
+  verbose: false
+
+  # Save intermediate results
+  save_intermediate: false
