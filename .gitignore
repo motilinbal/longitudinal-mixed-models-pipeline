@@ -1,0 +1,111 @@
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+# Data files (keep raw data structure but ignore contents)
+data/raw/*.csv
+data/processed/*.parquet
+data/processed/*.csv
+data/processed/*.json
+
+# Models
+models/*.pkl
+models/*.joblib
+
+# Reports and outputs
+reports/*.html
+reports/*.pdf
+reports/*.docx
+reports/figures/*.png
+reports/figures/*.jpg
+reports/figures/*.svg
+reports/tables/*.csv
+
+# Great Expectations
+great_expectations/
+uncommitted/
+
+# Quarto
+_quarto/
+_quarto.yml
+_files/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# R specific (if using R via pymer4)
+.Rhistory
+.RData
+.Ruserdata
+
+# Conda environment (if using conda)
+environment.yml
+conda-meta/
+
+# Cookiecutter template specific
+cookiecutter-data-science/
