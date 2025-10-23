@@ -3,7 +3,6 @@ venv/
 env/
 ENV/
 .venv/
-.env/
 
 # Python
 __pycache__/
@@ -28,29 +27,44 @@ wheels/
 *.egg
 MANIFEST
 
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Pyenv
+# pyenv
 .python-version
 
-# Environments
+# Environment variables
 .env
 .venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
 
-# IDEs
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# OS
 .DS_Store
 .DS_Store?
 ._*
@@ -59,59 +73,29 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Project specific
-# Data files (keep raw data structure but ignore contents)
-data/raw/*.csv
-data/processed/*.parquet
-data/processed/*.csv
-data/processed/*.json
-
-# Models
-models/*.pkl
-models/*.joblib
-
-# Reports and outputs
-reports/*.html
-reports/*.pdf
-reports/*.docx
-reports/figures/*.png
-reports/figures/*.jpg
-reports/figures/*.svg
-reports/tables/*.csv
-
-# Great Expectations
-great_expectations/
-uncommitted/
-
-# Quarto
-_quarto/
-_quarto.yml
-_files/
-
-# Logs
-*.log
-logs/
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-*.temp
-
-# R specific (if using R via pymer4)
+# R
 .Rhistory
 .RData
 .Ruserdata
 
-# Conda environment (if using conda)
-environment.yml
-conda-meta/
+# Project specific
+data/processed/*
+!data/processed/.gitkeep
+models/*
+!models/.gitkeep
+reports/figures/*
+!reports/figures/.gitkeep
+reports/tables/*
+!reports/tables/.gitkeep
+reports/*.html
 
-# Cookiecutter template specific
-cookiecutter-data-science/
+# Temporary files
+*.tmp
+*.temp
+install_r_packages.R
+verify_installation.py
 
 # Notebooks
-notebooks/
-
-# tests
-tests/
+.ipynb
+.ipynb_checkpoints
+/notebooks
